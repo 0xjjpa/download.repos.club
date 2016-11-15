@@ -1,41 +1,34 @@
 import React, { Component } from 'react'
-import logo from './logo.svg'
-import './App.css'
 
+import './App.css'
 import '@blueprintjs/core/dist/blueprint.css'
+
 import {
-    Button,
-    Menu,
-    MenuItem,
-    MenuDivider,
-    Popover,
-    Position
+  NonIdealState
 } from '@blueprintjs/core'
 
-const menu = (
-  <Menu>
-    <MenuItem text='New' />
-    <MenuItem text='Open' />
-    <MenuItem text='Save' />
-    <MenuDivider />
-    <MenuItem text='Settings...' />
-  </Menu>
+const Navbar = () => (
+  <nav className='pt-navbar pt-dark'>
+    <div className='pt-navbar-group pt-align-left'>
+      <div className='pt-navbar-heading'>Blunder Repos Club</div>
+    </div>
+    <div className='pt-navbar-group pt-align-right'>
+      <button className='pt-button pt-minimal pt-icon-user'>Logout</button>
+    </div>
+  </nav>
 )
 
 class App extends Component {
   render () {
     return (
       <div className='App'>
-        <Popover content={menu} position={Position.BOTTOM_RIGHT}>
-          <Button text='Actions' />
-        </Popover>
-        <div className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className='App-intro'>
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <Navbar />
+        <NonIdealState
+          className='Empty'
+          visual={<span style={{fontSize: '6em'}} className='pt-icon pt-icon-git-repo' />}
+          title='No repositories have been loaded'
+          description='In order to show your repositories, you need to authenticate through Github'
+        />
       </div>
     )
   }
