@@ -4,4 +4,23 @@
 
 .App .Empty {
   margin-top: 30vh;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.App .Container {
+  width: 80vw;
+  margin: 10px auto;
+}
+
+.Repo__container,
+.Repo__headline-container,
+.Repo__metadata-container {
+  flex-grow: 1;
+  display: flex;
+  background: rgba(0,0,0,0.2);
+}
+
+.Repo__headline-container {
+  flex-direction: column;
 }

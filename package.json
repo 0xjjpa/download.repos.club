@@ -7,9 +7,11 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^1.0.1",
+    "axios": "^0.15.2",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
-    "react-dom": "^15.3.2"
+    "react-dom": "^15.3.2",
+    "retyped-axios-tsd-ambient": "^0.8.1-0"
   },
   "scripts": {
     "start": "react-scripts start",
