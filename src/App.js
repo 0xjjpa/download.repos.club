@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import Maybe from 'data.maybe'
 
 import './App.css'
 import '@blueprintjs/core/dist/blueprint.css'
@@ -12,14 +13,14 @@ const api = {
   getRepos: () => axios.get('https://api.github.com/users/d3/repos')
 }
 
-const Repo = () => (
+const Repo = ({name}) => (
   <div className='pt-card pt-elevation-3'>
     <div className='Repo'>
       <div className='Repo__container'>
         <div className='Repo__headline-container'>
           <span className='Repo__name'>
             <span className='pt-icon-standard pt-icon-git-repo' />
-            Title
+            {name}
           </span>
           <span className='Repo__description'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus nec dapibus et mauris, vitae dictum metus.</span>
         </div>
@@ -54,23 +55,34 @@ class App extends Component {
   async componentDidMount () {
     try {
       const repos = await api.getRepos()
-      this.setState({ repos: repos.data })
+      this.setState({ reposData: Maybe.Just(repos.data), loaded: true })
     } catch (err) {
       console.log('Error loading repositories', err)
     }
   }
+  constructor (props) {
+    super(props)
+    this.state = { loaded: false, reposData: Maybe.Nothing() }
+  }
   render () {
+    const { loaded, reposData } = this.state
+    const repos = reposData.chain(repos =>
+      repos.map((repo, i) => <Repo key={i} name={repo.name} />
+    ))
     return (
       <div className='App'>
         <Navbar />
         <div className='Container'>
-          <NonIdealState
-            className='Empty'
-            visual={<span style={{fontSize: '6em'}} className='pt-icon pt-icon-git-repo' />}
-            title='No repositories have been loaded'
-            description='In order to show your repositories, you need to authenticate through Github'
-          />
-          <Repo />
+          {
+            loaded
+            ? repos
+            : <NonIdealState
+              className='Empty'
+              visual={<span style={{fontSize: '6em'}} className='pt-icon pt-icon-git-repo' />}
+              title='No repositories have been loaded'
+              description='In order to show your repositories, you need to authenticate through Github'
+            />
+          }
         </div>
       </div>
     )
