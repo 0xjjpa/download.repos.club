@@ -6,12 +6,23 @@ import {Repo} from './Repo'
 import {Navbar} from './Navbar'
 import {Empty} from './Empty'
 
+import Auth from './Auth'
+
 import './App.css'
 import '@blueprintjs/core/dist/blueprint.css'
 
-const api = {
-  getRepos: () => axios.get('https://api.github.com/users/jjperezaguinaga/repos?per_page=100&sort=updated')
+class Api {
+  constructor () {
+    this.auth = new Auth('xRTGXVGR03uOlQMRds6ZpU0fx8OjLakE', 'jjperezaguinaga.auth0.com')
+  }
+  getRepos () {
+    return this.auth.loggedIn()
+    ? axios.get('https://api.github.com/user/repos?per_page=100&sort=updated')
+    : Promise.reject(new Error('User is not authenticated'))
+  }
 }
+const api = new Api()
+
 
 class App extends Component {
   async componentDidMount () {
@@ -22,7 +33,7 @@ class App extends Component {
         loaded: true
       })
     } catch (err) {
-      console.log('Error loading repositories', err)
+      console.error('Error loading repositories', err)
     }
   }
   constructor (props) {
@@ -49,7 +60,7 @@ class App extends Component {
     />)
     return (
       <div className='App'>
-        <Navbar />
+        <Navbar loaded={loaded} />
         <div className='Container'>
           {
             loaded
