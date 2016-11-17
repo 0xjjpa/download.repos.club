@@ -13,14 +13,48 @@
   margin: 10px auto;
 }
 
+.Card {
+  margin: 10px auto;
+}
+
+.Repo__tag,
+.Repo__icon,
+.Repo__name b {
+  margin-right: 5px;
+}
+
+.Repo__name {
+  margin: 5px 5px 5px 0;
+}
+
 .Repo__container,
 .Repo__headline-container,
 .Repo__metadata-container {
   flex-grow: 1;
   display: flex;
-  background: rgba(0,0,0,0.2);
+  margin-bottom: 5px;
+}
+
+.Repo__latest-update {
+  margin: auto;
 }
 
 .Repo__headline-container {
   flex-direction: column;
+  flex-grow: 2;
+  text-align: left;
+  width: 80%;
+}
+
+.Repo__metadata-container {
+  justify-content: space-around;
+  flex-direction: column;
+  width: 20%;
+  text-align: right;
+}
+
+.Repo__actions-container {
+  flex-grow: 1;
+  text-align: right;
+  justify-content: flex-end;
 }
