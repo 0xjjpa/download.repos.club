@@ -7,15 +7,18 @@ export default class Api {
   }
   getRepos () {
     return this.isLoggedIn()
-    ? axios.get('https://api.github.com/users/jjperezaguinaga/repos?per_page=100&sort=updated')
+    ? this.getProfile()
     : Promise.reject(new Error('User is not authenticated'))
   }
-  getProfile (callback) {
-    this.isLoggedIn() && this.auth.lock.getProfile(
-        this.auth.getToken(),
-        callback
-    )
+
+  async getProfile () {
+    const profile = await axios.post('https://jjperezaguinaga.auth0.com/tokeninfo', {id_token: this.auth.getToken()})
+    return Promise.all([
+      profile.data,
+      axios.get(`https://api.github.com/users/${profile.data.nickname}/repos?per_page=100&sort=updated`)
+    ])
   }
+
   isLoggedIn () {
     return this.auth.loggedIn()
   }

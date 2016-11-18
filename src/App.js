@@ -12,7 +12,7 @@ import './App.css'
 import '@blueprintjs/core/dist/blueprint.css'
 
 
-const initialState = { loggedIn: false, reposData: Maybe.Nothing() }
+const initialState = { loggedIn: false, reposData: Maybe.Nothing(), profile: null }
 
 class App extends Component {
   componentDidMount () {
@@ -25,10 +25,11 @@ class App extends Component {
   }
   async updateRepos () {
     try {
-      const repos = await this.api.getRepos()
+      const [profile, repos] = await this.api.getRepos()
       this.setState({
         reposData: repos.data.length ? Maybe.Just(repos.data) : Maybe.Nothing(),
-        loggedIn: this.api.isLoggedIn()
+        loggedIn: this.api.isLoggedIn(),
+        profile: profile
       })
     } catch (err) {
       console.error('Error loading repositories', err)
@@ -41,7 +42,7 @@ class App extends Component {
     : this.api.login.bind(this.api)
   }
   render () {
-    const { loggedIn, reposData } = this.state
+    const { loggedIn, reposData, profile } = this.state
     const repos = reposData.isJust ? reposData.chain(repos =>
       repos.map((repo, i) =>
         <Repo
@@ -53,6 +54,8 @@ class App extends Component {
           updatedAt={repo.updated_at}
           forked={repo.fork}
           disabled={i < 10}
+          // Download can be retrieved as repo.url, but we used profile to showcase its usage here.
+          downloadRepo={`https://github.com/${profile.nickname}/${repo.name}/archive/master.zip`}
         />
     )) : (<Empty
       title='No repositories found'

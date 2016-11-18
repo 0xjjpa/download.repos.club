@@ -3,10 +3,10 @@ import emoji from 'node-emoji'
 
 import {
   Colors,
-  Button
+  AnchorButton
 } from '@blueprintjs/core'
 
-export const Repo = ({name, description, stars, forks, updatedAt, forked, disabled}) => (
+export const Repo = ({name, description, stars, forks, updatedAt, forked, disabled, downloadRepo}) => (
   <div className='Card pt-card pt-elevation-3'>
     <div className='Repo'>
       <div className='Repo__container'>
@@ -26,7 +26,7 @@ export const Repo = ({name, description, stars, forks, updatedAt, forked, disabl
       <div className='Repo__container'>
         <span className='Repo__latest-update'>Last Updated: <b>{new Date(updatedAt).toDateString()}</b></span>
         <div className='Repo__actions-container pt-button-group'>
-          <Button iconName='download'> Download </Button>
+          <AnchorButton href={downloadRepo} download={`${name}.zip`} iconName='download'> Download </AnchorButton>
           {/*<Button className='pt-intent-danger' iconName='delete' disabled={disabled}> Delete </Button>*/}
         </div>
       </div>
