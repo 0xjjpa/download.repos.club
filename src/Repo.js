@@ -27,7 +27,7 @@ export const Repo = ({name, description, stars, forks, updatedAt, forked, disabl
         <span className='Repo__latest-update'>Last Updated: <b>{new Date(updatedAt).toDateString()}</b></span>
         <div className='Repo__actions-container pt-button-group'>
           <Button iconName='download'> Download </Button>
-          <Button className='pt-intent-danger' iconName='delete' disabled={disabled}> Delete </Button>
+          {/*<Button className='pt-intent-danger' iconName='delete' disabled={disabled}> Delete </Button>*/}
         </div>
       </div>
     </div>

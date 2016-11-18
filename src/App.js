@@ -1,47 +1,47 @@
 import React, { Component } from 'react'
-import axios from 'axios'
+
 import Maybe from 'data.maybe'
 
 import {Repo} from './Repo'
 import {Navbar} from './Navbar'
 import {Empty} from './Empty'
 
-import Auth from './Auth'
+import Api from './Api'
 
 import './App.css'
 import '@blueprintjs/core/dist/blueprint.css'
 
-class Api {
-  constructor () {
-    this.auth = new Auth('xRTGXVGR03uOlQMRds6ZpU0fx8OjLakE', 'jjperezaguinaga.auth0.com')
-  }
-  getRepos () {
-    return this.auth.loggedIn()
-    ? axios.get('https://api.github.com/user/repos?per_page=100&sort=updated')
-    : Promise.reject(new Error('User is not authenticated'))
-  }
-}
-const api = new Api()
 
+const initialState = { loggedIn: false, reposData: Maybe.Nothing() }
 
 class App extends Component {
-  async componentDidMount () {
+  componentDidMount () {
+    this.api.isLoggedIn() && this.updateRepos()
+  }
+  constructor (props) {
+    super(props)
+    this.state = initialState
+    this.api = new Api(this.updateRepos.bind(this))
+  }
+  async updateRepos () {
     try {
-      const repos = await api.getRepos()
+      const repos = await this.api.getRepos()
       this.setState({
         reposData: repos.data.length ? Maybe.Just(repos.data) : Maybe.Nothing(),
-        loaded: true
+        loggedIn: this.api.isLoggedIn()
       })
     } catch (err) {
       console.error('Error loading repositories', err)
     }
   }
-  constructor (props) {
-    super(props)
-    this.state = { loaded: false, reposData: Maybe.Nothing() }
+  onClickNavBar () {
+    const self = this
+    return this.state.loggedIn
+    ? () => { self.setState(initialState); self.api.logout() }
+    : this.api.login.bind(this.api)
   }
   render () {
-    const { loaded, reposData } = this.state
+    const { loggedIn, reposData } = this.state
     const repos = reposData.isJust ? reposData.chain(repos =>
       repos.map((repo, i) =>
         <Repo
@@ -60,10 +60,10 @@ class App extends Component {
     />)
     return (
       <div className='App'>
-        <Navbar loaded={loaded} />
+        <Navbar loggedIn={loggedIn} onClick={this.onClickNavBar.bind(this)} />
         <div className='Container'>
           {
-            loaded
+            loggedIn
             ? repos
             : <Empty />
           }

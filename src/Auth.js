@@ -1,18 +1,18 @@
 import Auth0Lock from 'auth0-lock'
 
 export default class Auth {
-  constructor (clientId, domain) {
+  constructor (clientId, domain, callback) {
     // Configure Auth0
-    this.lock = new Auth0Lock(clientId, domain, {})
+    this.lock = new Auth0Lock(clientId, domain, { redirect: true, allowSignUp: false })
     // Add callback for lock `authenticated` event
-    this.lock.on('authenticated', this._doAuthentication.bind(this))
+    this.lock.on('authenticated', this._doAuthentication.bind(this, callback))
     // binds login functions to keep this context
     this.login = this.login.bind(this)
   }
 
-  _doAuthentication (authResult) {
-    // Saves the user token
+  _doAuthentication (callback, authResult) {
     this.setToken(authResult.idToken)
+    callback()
   }
 
   login () {
